@@ -1,351 +1,1549 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Arbens VITAL</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Portfolio | CyberTech Pro</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Orbitron:wght@400;700;900&family=Rajdhani:wght@300;400;600;700&display=swap" rel="stylesheet">
+  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet">
+  <style>
+    :root {
+      --neon-green: #00ff41;
+      --neon-blue: #00d4ff;
+      --neon-cyan: #0ff;
+      --dark-bg: #030a0e;
+      --dark-card: #060f14;
+      --dark-card2: #0a1520;
+      --gray: #1a2530;
+      --gray2: #243040;
+      --text-dim: #4a7a8a;
+      --text-mid: #7ab8c8;
+      --text-light: #b0d8e8;
+      --glow-green: 0 0 10px #00ff41, 0 0 20px #00ff4166, 0 0 40px #00ff4133;
+      --glow-blue: 0 0 10px #00d4ff, 0 0 20px #00d4ff66, 0 0 40px #00d4ff33;
+      --border-glow: 1px solid #00d4ff33;
+    }
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      background: var(--dark-bg);
+      color: var(--text-light);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 17px;
+      overflow-x: hidden;
+    }
+    /* ===== BACKGROUND CANVAS ===== */
+    #bg-canvas {
+      position: fixed;
+      top: 0; left: 0;
+      width: 100%; height: 100%;
+      z-index: 0;
+      pointer-events: none;
+      opacity: 0.25;
+    }
+    /* ===== SCROLLBAR ===== */
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-track { background: var(--dark-bg); }
+    ::-webkit-scrollbar-thumb { background: var(--neon-blue); border-radius: 2px; }
 
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    /* ===== NAVBAR ===== */
+    #navbar {
+      position: fixed; top: 0; width: 100%; z-index: 1000;
+      background: rgba(3,10,14,0.92);
+      backdrop-filter: blur(12px);
+      border-bottom: 1px solid #00d4ff22;
+      padding: 0 2rem;
+      transition: all 0.3s;
+    }
+    #navbar.scrolled { background: rgba(3,10,14,0.99); border-bottom-color: #00d4ff55; }
+    .navbar-brand {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.3rem;
+      color: var(--neon-blue) !important;
+      text-shadow: var(--glow-blue);
+      letter-spacing: 3px;
+    }
+    .navbar-brand span { color: var(--neon-green); text-shadow: var(--glow-green); }
+    .nav-link {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--text-mid) !important;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 0.5rem 1rem !important;
+      position: relative;
+      transition: all 0.3s;
+    }
+    .nav-link::before {
+      content: '';
+      position: absolute; bottom: 0; left: 50%;
+      width: 0; height: 1px;
+      background: var(--neon-blue);
+      transition: all 0.3s;
+      transform: translateX(-50%);
+    }
+    .nav-link:hover { color: var(--neon-blue) !important; text-shadow: var(--glow-blue); }
+    .nav-link:hover::before { width: 80%; }
+    .nav-cta {
+      border: 1px solid var(--neon-green) !important;
+      color: var(--neon-green) !important;
+      border-radius: 0 !important;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      padding: 6px 16px !important;
+    }
+    .nav-cta:hover { background: var(--neon-green) !important; color: #000 !important; box-shadow: var(--glow-green); }
+    .navbar-toggler { border-color: var(--neon-blue); }
+    .navbar-toggler-icon { filter: invert(1) sepia(1) saturate(5) hue-rotate(175deg); }
 
-    <link rel="stylesheet" href="assets/css/styles.css">
+    /* ===== SECTION WRAPPER ===== */
+    section { position: relative; z-index: 1; }
+    .section-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 2rem;
+      font-weight: 900;
+      color: var(--neon-blue);
+      text-shadow: var(--glow-blue);
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .section-subtitle {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--text-dim);
+      font-size: 0.85rem;
+      letter-spacing: 3px;
+      margin-bottom: 3rem;
+    }
+    .section-divider {
+      width: 60px; height: 2px;
+      background: linear-gradient(90deg, var(--neon-green), var(--neon-blue));
+      margin: 0.8rem auto 0.5rem;
+      box-shadow: 0 0 8px var(--neon-blue);
+    }
+
+    /* ===== HERO SECTION ===== */
+    #hero {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      padding: 100px 0 60px;
+      overflow: hidden;
+    }
+    .hero-left { z-index: 2; }
+    .hero-tag {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--neon-green);
+      font-size: 0.8rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+      animation: blink-cursor 1s step-end infinite;
+    }
+    @keyframes blink-cursor { 50% { opacity: 0; } }
+    .hero-name {
+      font-family: 'Orbitron', monospace;
+      font-size: clamp(2rem, 5vw, 3.5rem);
+      font-weight: 900;
+      color: #fff;
+      line-height: 1.1;
+      margin-bottom: 1.2rem;
+      text-shadow: 0 0 30px #00d4ff44;
+    }
+    .hero-name span { color: var(--neon-blue); text-shadow: var(--glow-blue); }
+    .hero-roles {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: clamp(1rem, 2.5vw, 1.4rem);
+      color: var(--neon-green);
+      text-shadow: var(--glow-green);
+      min-height: 2em;
+      margin-bottom: 1.5rem;
+    }
+    .hero-desc {
+      color: var(--text-mid);
+      max-width: 500px;
+      line-height: 1.8;
+      margin-bottom: 2rem;
+      font-size: 1rem;
+    }
+    .hero-btns { display: flex; gap: 1rem; flex-wrap: wrap; margin-bottom: 2.5rem; }
+    .btn-cyber {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.85rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 10px 24px;
+      border: none;
+      cursor: pointer;
+      position: relative;
+      clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .btn-cyber-primary {
+      background: linear-gradient(135deg, #00d4ff22, #00d4ff44);
+      border: 1px solid var(--neon-blue);
+      color: var(--neon-blue);
+    }
+    .btn-cyber-primary:hover {
+      background: var(--neon-blue);
+      color: #000;
+      box-shadow: var(--glow-blue);
+    }
+    .btn-cyber-secondary {
+      background: transparent;
+      border: 1px solid var(--neon-green);
+      color: var(--neon-green);
+    }
+    .btn-cyber-secondary:hover {
+      background: var(--neon-green);
+      color: #000;
+      box-shadow: var(--glow-green);
+    }
+    .social-links { display: flex; gap: 1rem; }
+    .social-btn {
+      width: 40px; height: 40px;
+      border: 1px solid var(--gray2);
+      background: var(--dark-card);
+      color: var(--text-dim);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1.1rem;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .social-btn:hover { border-color: var(--neon-blue); color: var(--neon-blue); box-shadow: var(--glow-blue); background: var(--dark-card2); }
+    .social-btn.wa:hover { border-color: var(--neon-green); color: var(--neon-green); box-shadow: var(--glow-green); }
+
+    /* Hero Image */
+    .hero-img-wrap {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    .hero-img-hex {
+      position: relative;
+      width: clamp(250px, 35vw, 420px);
+      aspect-ratio: 1;
+    }
+    .hero-img-hex::before {
+      content: '';
+      position: absolute; inset: -4px;
+      background: linear-gradient(135deg, var(--neon-blue), var(--neon-green), var(--neon-blue));
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      animation: rotate-border 6s linear infinite;
+      z-index: 0;
+    }
+    @keyframes rotate-border {
+      0% { filter: hue-rotate(0deg); }
+      100% { filter: hue-rotate(360deg); }
+    }
+    .hero-img-hex .inner {
+      position: absolute; inset: 6px;
+      clip-path: polygon(50% 0%, 100% 25%, 100% 75%, 50% 100%, 0% 75%, 0% 25%);
+      overflow: hidden;
+      background: var(--dark-card2);
+      z-index: 1;
+    }
+    .hero-img-hex .inner img {
+      width: 100%; height: 100%;
+      object-fit: cover;
+      filter: saturate(0.7) contrast(1.1);
+    }
+    .hero-img-placeholder {
+      width: 100%; height: 100%;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 6rem;
+      color: var(--text-dim);
+      background: linear-gradient(135deg, #0a1520, #060f14);
+    }
+    .hero-corner-deco {
+      position: absolute;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--neon-blue);
+      opacity: 0.6;
+      letter-spacing: 1px;
+    }
+    .hero-corner-deco.tl { top: 5%; left: 5%; }
+    .hero-corner-deco.br { bottom: 5%; right: 5%; text-align: right; }
+
+    /* ===== ABOUT SECTION ===== */
+    #about { padding: 100px 0; background: linear-gradient(180deg, transparent, #030e1566, transparent); }
+    .about-img-wrap {
+      position: relative;
+    }
+    .about-img-frame {
+      position: relative;
+      border: 1px solid var(--neon-blue);
+      padding: 8px;
+      background: var(--dark-card);
+    }
+    .about-img-frame::before {
+      content: '';
+      position: absolute; top: -3px; left: -3px; right: -3px; bottom: -3px;
+      border: 1px solid var(--neon-green);
+      opacity: 0.3;
+    }
+    .about-img-frame img {
+      width: 100%;
+      filter: saturate(0.6) brightness(0.9);
+      display: block;
+    }
+    .about-img-placeholder {
+      width: 100%; height: 350px;
+      display: flex; align-items: center; justify-content: center;
+      background: var(--dark-card2);
+      font-size: 5rem;
+      color: var(--text-dim);
+    }
+    .about-scan {
+      position: absolute;
+      width: 100%; height: 3px;
+      background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+      top: 0; left: 0;
+      animation: scan 4s linear infinite;
+      opacity: 0.6;
+    }
+    @keyframes scan { 0% { top: 0; } 100% { top: 100%; } }
+    .about-label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.7rem;
+      color: var(--neon-green);
+      letter-spacing: 2px;
+      position: absolute;
+      bottom: 15px; left: 20px;
+      text-shadow: var(--glow-green);
+    }
+    /* About tabs */
+    .about-tabs { display: flex; gap: 0; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .tab-btn {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      padding: 8px 18px;
+      background: var(--dark-card);
+      border: 1px solid var(--gray2);
+      color: var(--text-dim);
+      cursor: pointer;
+      transition: all 0.3s;
+      border-right: none;
+    }
+    .tab-btn:last-child { border-right: 1px solid var(--gray2); }
+    .tab-btn.active {
+      background: linear-gradient(135deg, #00d4ff11, #00d4ff22);
+      border-color: var(--neon-blue);
+      color: var(--neon-blue);
+      text-shadow: var(--glow-blue);
+    }
+    .tab-btn:hover:not(.active) { color: var(--text-light); border-color: var(--gray); }
+    .tab-content-panel { display: none; animation: fadeIn 0.4s ease; }
+    .tab-content-panel.active { display: block; }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
+    .info-row { display: flex; gap: 0.5rem; margin-bottom: 0.6rem; align-items: flex-start; }
+    .info-label {
+      font-family: 'Share Tech Mono', monospace;
+      color: var(--neon-blue);
+      font-size: 0.75rem;
+      min-width: 130px;
+      letter-spacing: 1px;
+    }
+    .info-val { color: var(--text-light); font-size: 0.95rem; }
+    .exp-item { padding: 1rem; border-left: 2px solid var(--neon-blue); margin-bottom: 1rem; background: var(--dark-card); }
+    .exp-title { font-family: 'Orbitron', monospace; color: var(--neon-blue); font-size: 0.9rem; font-weight: 700; }
+    .exp-company { color: var(--neon-green); font-size: 0.85rem; font-family: 'Share Tech Mono', monospace; }
+    .exp-date { color: var(--text-dim); font-size: 0.75rem; font-family: 'Share Tech Mono', monospace; }
+    .exp-desc { color: var(--text-mid); font-size: 0.9rem; margin-top: 0.4rem; line-height: 1.6; }
+    .edu-item { padding: 1rem; border-left: 2px solid var(--neon-green); margin-bottom: 1rem; background: var(--dark-card); }
+    .edu-degree { font-family: 'Orbitron', monospace; color: var(--neon-green); font-size: 0.85rem; font-weight: 700; }
+    .edu-school { color: var(--neon-blue); font-size: 0.85rem; font-family: 'Share Tech Mono', monospace; }
+    .skill-bar-wrap { margin-bottom: 0.8rem; }
+    .skill-bar-label { display: flex; justify-content: space-between; font-family: 'Share Tech Mono', monospace; font-size: 0.75rem; color: var(--text-mid); margin-bottom: 4px; }
+    .skill-bar { height: 4px; background: var(--gray); position: relative; }
+    .skill-bar-fill { height: 100%; background: linear-gradient(90deg, var(--neon-green), var(--neon-blue)); box-shadow: 0 0 6px var(--neon-blue); width: 0; transition: width 1.2s ease; }
+
+    /* ===== SERVICES SECTION ===== */
+    #services { padding: 100px 0; }
+    .service-card {
+      background: var(--dark-card);
+      border: 1px solid var(--gray2);
+      padding: 2rem 1.5rem;
+      position: relative;
+      transition: all 0.4s;
+      overflow: hidden;
+      height: 100%;
+    }
+    .service-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 2px;
+      background: linear-gradient(90deg, var(--neon-blue), var(--neon-green));
+      transform: scaleX(0);
+      transition: transform 0.4s;
+    }
+    .service-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 20px #00d4ff22; transform: translateY(-4px); }
+    .service-card:hover::before { transform: scaleX(1); }
+    .service-icon {
+      font-size: 2.5rem;
+      color: var(--neon-blue);
+      text-shadow: var(--glow-blue);
+      margin-bottom: 1rem;
+      display: block;
+    }
+    .service-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.95rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 1px;
+      margin-bottom: 0.8rem;
+    }
+    .service-desc { color: var(--text-mid); font-size: 0.9rem; line-height: 1.7; margin-bottom: 1.5rem; }
+    .btn-service {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 2px;
+      padding: 7px 18px;
+      background: transparent;
+      border: 1px solid var(--neon-green);
+      color: var(--neon-green);
+      cursor: pointer;
+      clip-path: polygon(6px 0%, 100% 0%, calc(100% - 6px) 100%, 0% 100%);
+      transition: all 0.3s;
+      text-transform: uppercase;
+    }
+    .btn-service:hover { background: var(--neon-green); color: #000; box-shadow: var(--glow-green); }
+
+    /* ===== PROJECTS SECTION ===== */
+    #projects { padding: 100px 0; background: linear-gradient(180deg, transparent, #030e1566, transparent); }
+    .project-card {
+      background: var(--dark-card);
+      border: 1px solid var(--gray2);
+      overflow: hidden;
+      transition: all 0.4s;
+      height: 100%;
+      display: flex; flex-direction: column;
+    }
+    .project-card:hover { border-color: var(--neon-blue); box-shadow: 0 0 25px #00d4ff22; transform: translateY(-5px); }
+    .project-img {
+      width: 100%;
+      height: 180px;
+      object-fit: cover;
+      filter: saturate(0.5) brightness(0.8);
+      transition: all 0.4s;
+    }
+    .project-card:hover .project-img { filter: saturate(0.8) brightness(1); }
+    .project-img-placeholder {
+      width: 100%; height: 180px;
+      background: linear-gradient(135deg, var(--dark-card2), var(--gray));
+      display: flex; align-items: center; justify-content: center;
+      font-size: 3rem;
+      color: var(--text-dim);
+    }
+    .project-body { padding: 1.5rem; flex: 1; display: flex; flex-direction: column; }
+    .project-tag {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      color: var(--neon-green);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      margin-bottom: 0.5rem;
+    }
+    .project-title {
+      font-family: 'Orbitron', monospace;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: #fff;
+      margin-bottom: 0.8rem;
+    }
+    .project-desc { color: var(--text-mid); font-size: 0.9rem; line-height: 1.7; flex: 1; }
+    .project-footer { padding: 1rem 1.5rem; border-top: 1px solid var(--gray2); display: flex; gap: 1rem; }
+    .project-link {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      letter-spacing: 1px;
+      color: var(--neon-blue);
+      text-decoration: none;
+      transition: all 0.3s;
+    }
+    .project-link:hover { color: var(--neon-cyan); text-shadow: var(--glow-blue); }
+    .project-link i { margin-right: 5px; }
+    .tech-badge {
+      display: inline-block;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.65rem;
+      padding: 2px 8px;
+      border: 1px solid var(--gray2);
+      color: var(--text-dim);
+      margin: 2px;
+      letter-spacing: 1px;
+    }
+
+    /* ===== CONTACT SECTION ===== */
+    #contact { padding: 100px 0; }
+    .contact-card {
+      background: var(--dark-card);
+      border: 1px solid var(--gray2);
+      padding: 2rem;
+      height: 100%;
+    }
+    .contact-form input,
+    .contact-form textarea,
+    .contact-form select {
+      background: var(--dark-card2);
+      border: 1px solid var(--gray2);
+      color: var(--text-light);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 1rem;
+      padding: 10px 15px;
+      width: 100%;
+      margin-bottom: 1rem;
+      outline: none;
+      transition: border-color 0.3s;
+    }
+    .contact-form input:focus,
+    .contact-form textarea:focus,
+    .contact-form select:focus { border-color: var(--neon-blue); box-shadow: 0 0 8px #00d4ff22; }
+    .contact-form input::placeholder,
+    .contact-form textarea::placeholder { color: var(--text-dim); }
+    .contact-form label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--neon-blue);
+      letter-spacing: 2px;
+      display: block;
+      margin-bottom: 5px;
+      text-transform: uppercase;
+    }
+    .contact-info-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+    .contact-info-icon {
+      width: 40px; height: 40px;
+      border: 1px solid var(--neon-blue);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--neon-blue);
+      font-size: 1.1rem;
+      flex-shrink: 0;
+    }
+    .contact-info-text .label { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--text-dim); letter-spacing: 2px; }
+    .contact-info-text .val { color: var(--text-light); font-size: 1rem; }
+
+    /* ===== FOOTER ===== */
+    footer {
+      background: var(--dark-card);
+      border-top: 1px solid var(--gray2);
+      padding: 3rem 0 1.5rem;
+    }
+    .footer-brand {
+      font-family: 'Orbitron', monospace;
+      font-weight: 900;
+      font-size: 1.4rem;
+      color: var(--neon-blue);
+      text-shadow: var(--glow-blue);
+      letter-spacing: 3px;
+      margin-bottom: 0.5rem;
+    }
+    .footer-brand span { color: var(--neon-green); }
+    .footer-desc { color: var(--text-dim); font-size: 0.9rem; max-width: 300px; line-height: 1.7; }
+    .footer-social { display: flex; gap: 0.8rem; margin-top: 1rem; }
+    .footer-social a {
+      width: 36px; height: 36px;
+      border: 1px solid var(--gray2);
+      display: flex; align-items: center; justify-content: center;
+      color: var(--text-dim);
+      font-size: 1rem;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+    .footer-social a:hover { border-color: var(--neon-blue); color: var(--neon-blue); box-shadow: var(--glow-blue); }
+    .footer-title { font-family: 'Orbitron', monospace; font-size: 0.8rem; color: var(--neon-blue); letter-spacing: 2px; margin-bottom: 1rem; }
+    .footer-links { list-style: none; padding: 0; }
+    .footer-links li { margin-bottom: 0.5rem; }
+    .footer-links a {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      color: var(--text-dim);
+      text-decoration: none;
+      letter-spacing: 1px;
+      transition: all 0.3s;
+    }
+    .footer-links a::before { content: '> '; color: var(--neon-green); }
+    .footer-links a:hover { color: var(--neon-blue); }
+    .footer-bottom {
+      border-top: 1px solid var(--gray2);
+      margin-top: 2rem;
+      padding-top: 1.5rem;
+      text-align: center;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--text-dim);
+    }
+    .footer-bottom span { color: var(--neon-green); }
+
+    /* ===== MODAL ===== */
+    .modal-content {
+      background: var(--dark-card);
+      border: 1px solid var(--neon-blue);
+      box-shadow: var(--glow-blue);
+    }
+    .modal-header {
+      border-bottom: 1px solid var(--gray2);
+      background: var(--dark-card2);
+    }
+    .modal-title {
+      font-family: 'Orbitron', monospace;
+      color: var(--neon-blue);
+      font-size: 1rem;
+      letter-spacing: 2px;
+    }
+    .modal-body label {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--neon-blue);
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+    .modal-body input,
+    .modal-body textarea { background: var(--dark-card2); border: 1px solid var(--gray2); color: var(--text-light); }
+    .modal-body input:focus,
+    .modal-body textarea:focus { background: var(--dark-card2); border-color: var(--neon-blue); color: var(--text-light); box-shadow: 0 0 8px #00d4ff22; }
+    .modal-footer { border-top: 1px solid var(--gray2); }
+    .btn-close { filter: invert(1) sepia(1) saturate(5) hue-rotate(175deg); }
+    .send-choice {
+      display: flex; gap: 1rem; margin-top: 1rem; flex-wrap: wrap;
+    }
+    .send-btn {
+      flex: 1;
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.8rem;
+      letter-spacing: 2px;
+      padding: 10px;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-align: center;
+      text-transform: uppercase;
+      border: none;
+    }
+    .send-email { background: linear-gradient(135deg, #00d4ff22, #00d4ff44); border: 1px solid var(--neon-blue); color: var(--neon-blue); }
+    .send-email:hover { background: var(--neon-blue); color: #000; box-shadow: var(--glow-blue); }
+    .send-wa { background: linear-gradient(135deg, #00ff4122, #00ff4144); border: 1px solid var(--neon-green); color: var(--neon-green); }
+    .send-wa:hover { background: var(--neon-green); color: #000; box-shadow: var(--glow-green); }
+
+    /* Glitch Text Effect */
+    .glitch {
+      position: relative;
+    }
+    .glitch::before, .glitch::after {
+      content: attr(data-text);
+      position: absolute; top: 0; left: 0;
+      width: 100%; height: 100%;
+    }
+    .glitch::before {
+      left: 2px;
+      text-shadow: -1px 0 var(--neon-green);
+      animation: glitch1 3s infinite linear alternate-reverse;
+      clip-path: polygon(0 0, 100% 0, 100% 45%, 0 45%);
+    }
+    .glitch::after {
+      left: -2px;
+      text-shadow: 2px 0 var(--neon-blue);
+      animation: glitch2 2.5s infinite linear alternate-reverse;
+      clip-path: polygon(0 55%, 100% 55%, 100% 100%, 0 100%);
+    }
+    @keyframes glitch1 { 0%,95%{transform:none} 96%{transform:translateX(-2px) skewX(1deg)} 97%{transform:translateX(2px)} 98%{transform:translateX(-1px) skewX(-1deg)} 100%{transform:none} }
+    @keyframes glitch2 { 0%,95%{transform:none} 96%{transform:translateX(2px) skewX(-1deg)} 97%{transform:translateX(-2px)} 98%{transform:translateX(1px) skewX(1deg)} 100%{transform:none} }
+
+    /* Animated counter / terminal line */
+    .terminal-line {
+      font-family: 'Share Tech Mono', monospace;
+      font-size: 0.75rem;
+      color: var(--neon-green);
+      opacity: 0.7;
+      margin-bottom: 0.5rem;
+      letter-spacing: 1px;
+    }
+    /* Pulse ring */
+    @keyframes pulse-ring {
+      0% { transform: scale(0.9); box-shadow: 0 0 0 0 #00d4ff44; }
+      70% { transform: scale(1); box-shadow: 0 0 0 12px transparent; }
+      100% { transform: scale(0.9); }
+    }
+    .status-dot {
+      display: inline-block;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--neon-green);
+      box-shadow: var(--glow-green);
+      margin-right: 6px;
+      animation: pulse-ring 2s infinite;
+    }
+
+    /* Responsive */
+    @media (max-width: 768px) {
+      .hero-img-wrap { margin-top: 3rem; }
+      .about-tabs { gap: 2px; }
+      .tab-btn { font-size: 0.65rem; padding: 7px 10px; }
+    }
+  </style>
 </head>
 <body>
-    
-    <header class="header">
 
-        <a href="" class="logo">Arbens <span class="spanlogo">VITAL</span></a>
-    
-        <nav class="navbar">
-            <a href="#home" class="active">Home</a>
-            <a href="#about">About</a>
-            <a href="#skills">Skills</a>
-            <a href="#services">Services</a>
-            <a href="#portfolio">Projects</a>
-            <a href="#contact">Contact</a>
-        </nav>
-    
-        <div class='bx bx-moon' id="darkMode-icon"></div>
+<!-- ANIMATED BACKGROUND -->
+<canvas id="bg-canvas"></canvas>
 
-        <div class='bx bx-menu' id="menu-icon"></div>
-    
-    </header>
+<!-- ===== NAVBAR ===== -->
+<nav id="navbar" class="navbar navbar-expand-lg">
+  <div class="container">
+    <a class="navbar-brand" href="#hero">BUG5<span>R2AP2R</span></a>
+    <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navMenu">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse" id="navMenu">
+      <ul class="navbar-nav ms-auto align-items-center gap-1">
+        <li class="nav-item"><a class="nav-link" href="#about">À Propos</a></li>
+        <li class="nav-item"><a class="nav-link" href="#services">Services</a></li>
+        <li class="nav-item"><a class="nav-link" href="#projects">Projets</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contact">Contact</a></li>
+        <li class="nav-item ms-2"><a class="nav-link nav-cta" href="#contact">Hire Me</a></li>
+      </ul>
+    </div>
+  </div>
+</nav>
 
-    <!-- home section -->
-    <section class="home" id="home">
-        <div class="home-content">
-            <h3>Hello, I am</h3>
-            <h1>Arbens VITAL</h1>
-            <p class="p">a versatile professional with a passion for turning ideas into digital reality. As a Web Developer, I specialize in creating responsive and dynamic websites
-                 that not only look great but also deliver an exceptional user experience.</p>
+<!-- ===== HERO ===== -->
+<section id="hero">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-7 hero-left" data-aos="fade-right">
+        <p class="terminal-line">$ init_portfolio --mode=active <span id="cursor">█</span></p>
+        <div class="hero-tag"><span class="status-dot"></span> Disponible pour missions</div>
+        <h1 class="hero-name glitch" data-text="Arbens VITAL">Arbens <span>VITAL</span></h1>
+        <div class="hero-roles"><span id="typed-text"></span><span id="typed-cursor" style="color:var(--neon-green);animation:blink-cursor 0.8s step-end infinite">_</span></div>
+        <p class="hero-desc">
+          Professionnel IT polyvalent spécialisé en analyse de données, gestion de base de données, administration réseau, développement et cybersécurité. 
+          Je protège, j'analyse, je construis des systèmes résilients.
+        </p>
+        <div class="hero-btns">
+          <a href="#projects" class="btn-cyber btn-cyber-primary">Voir mes projets</a>
+          <a href="#contact" class="btn-cyber btn-cyber-secondary">Me contacter</a>
+        </div>
+        <div class="social-links">
+          <a href="https://linkedin.com/" target="_blank" class="social-btn" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://github.com/" target="_blank" class="social-btn" title="GitHub"><i class="fab fa-github"></i></a>
+          <a href="https://wa.me/50900000000" target="_blank" class="social-btn wa" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:arbensvital@gmail.com" class="social-btn" title="Email"><i class="fas fa-envelope"></i></a>
+          <a href="https://twitter.com/" target="_blank" class="social-btn" title="Twitter/X"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-5 hero-img-wrap">
+        <div class="hero-img-hex">
+          <div class="inner">
+            <!-- Remplacez 'votre-photo.jpg' par votre vraie photo -->
+            <div class="hero-img-placeholder"><i class="fas fa-user-shield"></i></div>
+          </div>
+        </div>
+        <div class="hero-corner-deco tl">SYS_ID:0x4A2F<br>STATUS:ONLINE<br>SEC:ACTIVE</div>
+        <div class="hero-corner-deco br">ENCRYPT:AES256<br>FIREWALL:ON<br>v2.4.7_PROD</div>
+      </div>
+    </div>
+  </div>
+</section>
 
-            <div class="social-media">
-                <a href="#"><i class='bx bxl-facebook'></i></a>
-                <a href="#"><i class='bx bxl-twitter'></i></a>
-                <a href="#"><i class='bx bxl-instagram-alt'></i></a>
-                <a href="#"><i class='bx bxl-linkedin'></i></a>
-                <a href="#"><i class='bx bxl-github'></i></a>
-            </div>
-
-            <a href="#" class="btn">Download CV</a>
+<!-- ===== ABOUT ===== -->
+<section id="about">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">À PROPOS</h2>
+      <div class="section-divider mx-auto"></div>
+      <p class="section-subtitle">// IDENTIFICATION DU PROFIL</p>
+    </div>
+    <div class="row g-5 align-items-start">
+      <div class="col-lg-4">
+        <div class="about-img-wrap">
+          <div class="about-img-frame">
+            <div class="about-scan"></div>
+            <!-- Remplacez par votre photo -->
+            <div class="about-img-placeholder"><i class="fas fa-id-badge"></i></div>
+            <div class="about-label">ID:BUG5_R2AP2R // VERIFIED</div>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-8">
+        <div class="about-tabs">
+          <button class="tab-btn active" onclick="showTab('about-me')">ABOUT</button>
+          <button class="tab-btn" onclick="showTab('experience')">EXPÉRIENCE</button>
+          <button class="tab-btn" onclick="showTab('formation')">FORMATION</button>
+          <button class="tab-btn" onclick="showTab('skills')">COMPÉTENCES</button>
         </div>
 
-
-        <div class="profession-container">
-            <div class="profession-box">
-
-                <div class="profession" style="--i:0;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Web Developer</h3>
-                </div>
-
-                <div class="profession" style="--i:1;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Mobile Developer</h3>
-                </div>
-
-                <div class="profession" style="--i:2;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Graphic Designer</h3>
-                </div>
-
-                <div class="profession" style="--i:3;">
-                    <i class='bx bx-code-alt'></i>
-                    <h3>Bussiness Management</h3>
-                </div>
-
-                <div class="circle"></div>
-            </div>
-
-            <div class="overlay">
-                
-            </div>
-
-            <div class="home-img">
-                <img src="assets/img/first.png" alt="" srcset="">
-            </div>
+        <!-- ABOUT ME -->
+        <div id="about-me" class="tab-content-panel active">
+          <p style="color:var(--text-mid);line-height:1.8;margin-bottom:1.5rem;font-size:1rem;">
+            Passionné par la technologie et la sécurité informatique, je suis un professionnel IT polyvalent 
+            basé en Haïti. Mon expertise couvre l'administration réseau, l'analyse de données, la gestion de base de données, le développement 
+            logiciel et la cybersécurité offensive et défensive.
+          </p>
+          <div class="info-row"><span class="info-label">NOM:</span><span class="info-val">Arbens VITAL</span></div>
+          <div class="info-row"><span class="info-label">LOCALISATION:</span><span class="info-val">Delmas, Haïti</span></div>
+          <div class="info-row"><span class="info-label">EMAIL:</span><span class="info-val">arbensvital@gmail.com</span></div>
+          <div class="info-row"><span class="info-label">TÉLÉPHONE:</span><span class="info-val">+509 38 97 0263</span></div>
+          <div class="info-row"><span class="info-label">DISPONIBILITÉ:</span><span class="info-val"><span class="status-dot"></span> Disponible immédiatement</span></div>
+          <div class="info-row"><span class="info-label">LANGUES:</span><span class="info-val">Français, Créole, Anglais</span></div>
+          <div class="mt-3">
+            <a href="#" class="btn-cyber btn-cyber-primary" style="font-size:0.78rem;">
+              <i class="fas fa-download me-2"></i>Télécharger CV
+            </a>
+          </div>
         </div>
 
-    </section>
+        <!-- EXPERIENCE -->
+        <div id="experience" class="tab-content-panel">
+          <div class="exp-item">            
+            <div class="exp-title">Information Management Officer (IMO)</div>
+            <div class="exp-company">Acted</div>
 
-    <!-- about section -->
-
-    <section class="about" id="about">
-        <div class="about-img">
-            <img src="assets/img/about.png" alt="" srcset="" width="450px" height="350">
+            <div class="exp-date">// 2025 — PRÉSENT</div>
+            <div class="exp-desc">Administration d'infrastructures réseau complexes, configuration de firewalls, 
+            VPN et switches. Mise en place de politiques de sécurité et réponse aux incidents.</div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-title">Assistant IT</div>
+            <div class="exp-company">GOAL</div>
+            <div class="exp-date">// 2024 — 2025</div>
+            <div class="exp-desc">Administration d'infrastructures réseau complexes, configuration de firewalls, 
+            VPN et switches. Mise en place de politiques de sécurité et réponse aux incidents.</div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-title">IT Support</div>
+            <div class="exp-company">Thompson Electronics S.A.</div>
+            <div class="exp-date">// 2024 </div>
+            <div class="exp-desc">Analyse et visualisation de données business. Développement de dashboards 
+            avec Power BI et Python. Optimisation de bases de données SQL/NoSQL.</div>
+          </div>
+          <div class="exp-item">
+            <div class="exp-title">Stage departement marketing et developpement </div>
+            <div class="exp-company">HAINET S.A.</div>
+            <div class="exp-date">// 2021</div>
+            <div class="exp-desc">Développement d'applications web et mobiles. Intégration d'APIs REST. 
+            Déploiement cloud sur AWS et DigitalOcean.</div>
+          </div>
         </div>
 
-        <div class="about-content">
-            <div class="content1">
-                <h2 class="heading">About <span>Me</span></h2>
-                <h3>Hi I'm Here To Help Your Next Project!</h3>
-                <p class="p"> Enthusiastic Master's student in the field of Science and Technology, specializing in Computer Science with a focus on Business Management. My academic journey and professional experiences have afforded me a robust understanding of the fundamental principles
-                     of computer science while nurturing essential skills in business management.
-                </p>
-            </div>
-
-            <div class="content2">
-                <div class="infoP">
-                    <div class="tinfos">
-                        <ul>
-                            <li><h1>Last Name :</h1></li>
-                            <li><h1>First Name :</h1></li>
-                            <li><h1>Birth :</h1></li>
-                            <li><h1>Email :</h1></li>
-                            <li><h1>Telephone :</h1></li>
-                        </ul>
-                    </div>
-
-                    <div class="infos">
-                        <ul>
-                            <li><p>VITAL</p></li>
-                            <li><p>Arbens</p></li>
-                            <li><p>23-07-2000</h1></li>
-                            <li><p>arbensvital@gmail.com</p></li>
-                            <li><p>(+509) 3897-0263/ 42924323</p></li>
-                        </ul>
-                    </div>
-                </div>
-                
-            </div>
-        </div>
-    </section>
-
-
-
-     <!-- Section SKILL -->
-
-     <section class="skills" id="skills">
-        <h2 class="heading">My <span>Skills</span></h2>
-
-        <div class="skills-container">
-
-            <div class="skills-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>HTML</h3>
-                <p>90 %</p>
-                    
-                     
-            </div>
-
-            <div class="skills-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>Python/Django</h3>
-                <p>80 %</p>
-               
-            </div>
-
-            <div class="skills-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>JAVA</h3>
-                <p>70 %</p>
-            </div>
-
-            <div class="skills-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>PHP</h3>
-                <p>70 %</p>
-            </div>
-
-            <div class="skills-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>PHOTOSHOP</h3>
-                <p>65 %</p>
-            </div>
-
-            <div class="skills-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>QUICKSBOOKS</h3>
-                <p>50 %</p>
-            </div>
-        </div>
-    </section>
-
-
-
-
-
-    <!-- service Section -->
-
-    <section class="services" id="services">
-        <h2 class="heading">My <span>Services</span></h2>
-
-        <div class="services-container">
-
-            <div class="services-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>Web Development</h3>
-                <p>Crafting digital experiences that captivate and engage, I specialize 
-                    in building dynamic and responsive websites tailored to meet your unique business goals.</p>
-                    
-                     <a href="#contact" class="btn"> Read More</a>
-            </div>
-
-            <div class="services-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>PC Application</h3>
-                <p>Building powerful desktop applications that streamline processes and enhance efficiency.
-                     My custom PC applications are designed to meet the specific needs of your business.</p>
-                    
-                     <a href="#contact" class="btn"> Read More</a>
-            </div>
-
-            <div class="services-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>Web Design</h3>
-                <p>Transforming visions into visually stunning websites, my web design services blend creativity with functionality.
-                     I create intuitive and aesthetically pleasing designs that leave a lasting impression.</p>
-                    
-                     <a href="#contact" class="btn"> Read More</a>
-            </div>
-
-            <div class="services-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>Mobile Development</h3>
-                <p>Creating cutting-edge mobile applications that bring your ideas to life. From concept to execution,
-                     I deliver seamless and user-friendly mobile solutions for both Android and iOS platforms.</p>
-                    
-                     <a href="#contact" class="btn"> Read More</a>
-            </div>
-
-            <div class="services-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>Marketing</h3>
-                <p>Strategic and data-driven marketing solutions to elevate your brand. From digital campaigns to content marketing,
-                     I leverage diverse channels to help your business thrive in the competitive landscape.</p>
-                    
-                     <a href="#contact" class="btn"> Read More</a>
-            </div>
-
-            <div class="services-box">
-                <i class='bx bx-code-alt'></i>
-                <h3>SEO</h3>
-                <p>Boosting online visibility and driving organic traffic, my SEO services 
-                    ensure your website ranks higher on search engine results, maximizing its reach and impact.</p>
-                    
-                     <a href="#contact" class="btn"> Read More</a>
-            </div>
-        </div>
-    </section>
-
-
-    <!-- section project -->
-
-    <section class="portfolio" id="portfolio">
-        <h2 class="heading">latest <span>Project</span></h2>
-
-        <div class="portfolio-container">
-
-            <div class="portfolio-box">
-                <img src="assets/img/pj1.png" alt="" srcset="">
-
-                <div class="portfolio-layer">
-                    <h4>PC Application</h4>
-                    <p>Application de Gestion pour une Cooperative Bancaire</p>
-                        <a href=""><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="portfolio-box">
-                <img src="assets/img/pj2.png" alt="" srcset="">
-
-                <div class="portfolio-layer">
-                    <h4>WebSite</h4>
-                    <p>SYNTAX's Website</p>
-                        <a href=""><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="portfolio-box">
-                <img src="assets/img/pj3.png" alt="" srcset="">
-
-                <div class="portfolio-layer">
-                    <h4>Web Design</h4>
-                    <p>Portfolio for an freelancer(Django)</p>
-                        <a href=""><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="portfolio-box">
-                <img src="assets/img/pj4.png" alt="" srcset="">
-
-                <div class="portfolio-layer">
-                    <h4>Web Design</h4>
-                    <p>Portfolio for an Photographer(html,css,js)</p>
-                        <a href=""><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
-            <div class="portfolio-box">
-                <img src="assets/img/project-img-2.jpg" alt="" srcset="">
-
-                <div class="portfolio-layer">
-                    <h4>Web Design</h4>
-                    <p>Lorem ipsum dolor sit, amet consectetur adipisicing elit. Recusandae necessitatibus quaerat fugiat, nostrum aut mollitia voluptatibus 
-                        dolore, magni et fuga impedit nihil commodi quod mole
-                        stiae provident corporis aperiam repellat quae.</p>
-                        <a href=""><i class='bx bx-link-external'></i></a>
-                </div>
-            </div>
-
+        <!-- FORMATION -->
+        <div id="formation" class="tab-content-panel">
+          <div class="edu-item">
+            <div class="edu-degree">MASTER EN CYBERSÉCURITÉ</div>
+            <div class="edu-school">Ecole Supérieure d'Infotronique d'Haiti (ESIH)</div>
+            <div class="exp-date">// 2023 — 2024</div>
+            <div class="exp-desc">Sécurité offensive et défensive, cryptographie, forensics numériques, pentest avancé.</div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-degree">LICENCE EN INFORMATIQUE</div>
+            <div class="edu-school">Ecole Supérieure d'Infotronique d'Haiti (ESIH)</div>
+            <div class="exp-date">// 2020 — 2023</div>
+            <div class="exp-desc">Génie logiciel, base de données, réseaux et télécommunications, algorithmique avancée.</div>
+          </div>
+          <div class="edu-item">
+            <div class="edu-degree">Diplome en entrepreunariat</div>
+            <div class="edu-school">Ecole Supérieure d'Infotronique d'Haiti (ESIH)</div>
+            <div class="exp-date">// 2020 — 2023</div>
+            <div class="exp-desc">Certifications professionnelles reconnues mondialement en réseau et cybersécurité.</div>
+          </div>
         </div>
 
-    </section>
-
-    <!-- Section Contact -->
-
-    <section class="contact" id="contact">
-        <h2 class="heading">Contact <span>Me!</span></h2>
-
-        <form action="#">
-            <div class="input-box">
-                <input type="text" name="fullname" id="" placeholder="Full Name">
-                <input type="email" name="email_address" id="" placeholder="Email Address">
-            </div>
-            <div class="input-box">
-                <input type="number" name="mobile_number" id="" placeholder="Mobile Number">
-                <input type="text" name="subject" id="" placeholder="Email Subject">
-            
-            </div>
-            <textarea name="" id="" cols="30" rows="10" placeholder="Your Message"></textarea>
-            <input type="submit" value="Send Message" name="send_message" class="btn">
-        </form>
-    </section>
-
-
-    <footer class="footer">
-        <div class="footer-text">
-            <p>Copyright &copy; 2023 by Arbens VITAL | All Right Reserved</p>
-        
-            <div class="footer-iconTop">
-                <a href="#home"><i class='bx bx-up-arrow-alt'> </i></a>
-            </div>
+        <!-- SKILLS -->
+        <div id="skills" class="tab-content-panel">
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Cybersécurité / Pentest</span><span>90%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="90"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Administration Réseau</span><span>88%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="88"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Data Analysis (Python/SQL/R/POWERQUERIES)</span><span>82%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="82"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Développement Web</span><span>78%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="78"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Base de données</span><span>85%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="85"></div></div>
+          </div>
+          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Cloud & DevOps</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Microsoft 360 (Excel, Word)</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>powerbi</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Linux</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Adobe (photoshop,Indesign,Illustrator)</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>AI</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Cloud & DevOps</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>          <div class="skill-bar-wrap">
+            <div class="skill-bar-label"><span>Cloud & DevOps</span><span>72%</span></div>
+            <div class="skill-bar"><div class="skill-bar-fill" data-width="72"></div></div>
+          </div>
         </div>
-    </footer>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <!-- swiper js -->
+<!-- ===== SERVICES ===== -->
+<section id="services">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">SERVICES</h2>
+      <div class="section-divider mx-auto"></div>
+      <p class="section-subtitle">// MODULES DISPONIBLES</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="fas fa-shield-halved service-icon"></i>
+          <div class="service-title">CYBERSÉCURITÉ</div>
+          <p class="service-desc">Audit de sécurité, tests d'intrusion, analyse de vulnérabilités, mise en place de SOC et réponse aux incidents de sécurité.</p>
+          <button class="btn-service" onclick="openServiceModal('Cybersécurité')">CONTACTER</button>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="fas fa-network-wired service-icon"></i>
+          <div class="service-title">ADMIN RÉSEAU</div>
+          <p class="service-desc">Configuration et maintenance d'infrastructures réseau, routeurs, switches, VPN, firewall et monitoring de performance.</p>
+          <button class="btn-service" onclick="openServiceModal('Administration Réseau')">CONTACTER</button>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="fas fa-chart-line service-icon" style="color:var(--neon-green);text-shadow:var(--glow-green)"></i>
+          <div class="service-title">DATA ANALYTICS</div>
+          <p class="service-desc">Analyse de données massives, visualisation avec Power BI/Tableau, machine learning et aide à la décision basée sur les données.</p>
+          <button class="btn-service" onclick="openServiceModal('Data Analytics')">CONTACTER</button>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="fas fa-code service-icon"></i>
+          <div class="service-title">DÉVELOPPEMENT</div>
+          <p class="service-desc">Développement d'applications web full-stack, APIs REST, applications mobiles et systèmes embarqués sur mesure.</p>
+          <button class="btn-service" onclick="openServiceModal('Développement')">CONTACTER</button>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="fas fa-database service-icon" style="color:var(--neon-green);text-shadow:var(--glow-green)"></i>
+          <div class="service-title">BASE DE DONNÉES</div>
+          <p class="service-desc">Conception, optimisation et administration de bases de données relationnelles et NoSQL. Migration et sauvegarde.</p>
+          <button class="btn-service" onclick="openServiceModal('Base de Données')">CONTACTER</button>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="service-card">
+          <i class="fas fa-cloud service-icon"></i>
+          <div class="service-title">CLOUD & DEVOPS</div>
+          <p class="service-desc">Déploiement et gestion d'infrastructures cloud (AWS, Azure), containerisation Docker/Kubernetes, CI/CD pipelines.</p>
+          <button class="btn-service" onclick="openServiceModal('Cloud & DevOps')">CONTACTER</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script src="https://cdn.jsdelivr.net/net/npm/swiper@9/swiper-bundle.min.js"></script>
+<!-- ===== PROJECTS ===== -->
+<section id="projects">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">PROJETS</h2>
+      <div class="section-divider mx-auto"></div>
+      <p class="section-subtitle">// MISSIONS ACCOMPLIES</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card">
+          <div class="project-img-placeholder"><i class="fas fa-bug"></i></div>
+          <div class="project-body">
+            <div class="project-tag">CYBERSÉCURITÉ</div>
+            <div class="project-title">SYSTÈME DE DÉTECTION D'INTRUSION</div>
+            <p class="project-desc">Développement d'un IDS personnalisé basé sur l'analyse comportementale du trafic réseau avec alertes temps réel.</p>
+            <div class="mt-2">
+              <span class="tech-badge">Python</span>
+              <span class="tech-badge">Scapy</span>
+              <span class="tech-badge">Snort</span>
+            </div>
+          </div>
+          <div class="project-footer">
+            <a href="#" class="project-link"><i class="fab fa-github"></i>GitHub</a>
+            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i>Demo</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card">
+          <div class="project-img-placeholder"><i class="fas fa-chart-pie"></i></div>
+          <div class="project-body">
+            <div class="project-tag">DATA ANALYTICS</div>
+            <div class="project-title">DASHBOARD ANALYTIQUE BUSINESS</div>
+            <p class="project-desc">Tableau de bord interactif pour suivi des KPIs business avec prédiction des ventes par machine learning.</p>
+            <div class="mt-2">
+              <span class="tech-badge">Python</span>
+              <span class="tech-badge">Power BI</span>
+              <span class="tech-badge">SQL</span>
+            </div>
+          </div>
+          <div class="project-footer">
+            <a href="#" class="project-link"><i class="fab fa-github"></i>GitHub</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card">
+          <div class="project-img-placeholder"><i class="fas fa-lock"></i></div>
+          <div class="project-body">
+            <div class="project-tag">SÉCURITÉ</div>
+            <div class="project-title">PLATEFORME CTF HAITI</div>
+            <p class="project-desc">Plateforme de Capture The Flag pour la communauté cybersécurité haïtienne avec challenges créés de A à Z.</p>
+            <div class="mt-2">
+              <span class="tech-badge">Django</span>
+              <span class="tech-badge">Docker</span>
+              <span class="tech-badge">PostgreSQL</span>
+            </div>
+          </div>
+          <div class="project-footer">
+            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i>Visiter</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card">
+          <div class="project-img-placeholder"><i class="fas fa-server"></i></div>
+          <div class="project-body">
+            <div class="project-tag">RÉSEAU</div>
+            <div class="project-title">INFRASTRUCTURE RÉSEAU ENTREPRISE</div>
+            <p class="project-desc">Conception et déploiement d'une infrastructure réseau sécurisée pour PME avec segmentation VLAN et monitoring.</p>
+            <div class="mt-2">
+              <span class="tech-badge">Cisco</span>
+              <span class="tech-badge">pfSense</span>
+              <span class="tech-badge">Zabbix</span>
+            </div>
+          </div>
+          <div class="project-footer">
+            <a href="#" class="project-link"><i class="fas fa-file-alt"></i>Rapport</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card">
+          <div class="project-img-placeholder"><i class="fas fa-mobile-alt"></i></div>
+          <div class="project-body">
+            <div class="project-tag">DÉVELOPPEMENT</div>
+            <div class="project-title">APP MOBILE PAIEMENT MOBILE MONEY</div>
+            <p class="project-desc">Application mobile de gestion de paiements et transferts intégrant les API MonCash et autres solutions locales.</p>
+            <div class="mt-2">
+              <span class="tech-badge">Flutter</span>
+              <span class="tech-badge">Node.js</span>
+              <span class="tech-badge">MongoDB</span>
+            </div>
+          </div>
+          <div class="project-footer">
+            <a href="#" class="project-link"><i class="fab fa-github"></i>GitHub</a>
+            <a href="#" class="project-link"><i class="fas fa-external-link-alt"></i>Store</a>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-4 col-md-6">
+        <div class="project-card">
+          <div class="project-img-placeholder"><i class="fas fa-database"></i></div>
+          <div class="project-body">
+            <div class="project-tag">DATABASE</div>
+            <div class="project-title">SYSTÈME GESTION HOSPITALIER</div>
+            <p class="project-desc">Base de données centralisée pour gestion des patients, dossiers médicaux, stocks et facturation hospitalière.</p>
+            <div class="mt-2">
+              <span class="tech-badge">PostgreSQL</span>
+              <span class="tech-badge">Redis</span>
+              <span class="tech-badge">FastAPI</span>
+            </div>
+          </div>
+          <div class="project-footer">
+            <a href="#" class="project-link"><i class="fab fa-github"></i>GitHub</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
 
-    <script src="assets/js/main.js"></script>
+<!-- ===== CONTACT ===== -->
+<section id="contact">
+  <div class="container">
+    <div class="text-center mb-5">
+      <h2 class="section-title">CONTACT</h2>
+      <div class="section-divider mx-auto"></div>
+      <p class="section-subtitle">// ÉTABLIR UNE CONNEXION</p>
+    </div>
+    <div class="row g-4">
+      <div class="col-lg-5">
+        <div class="contact-card">
+          <h5 class="footer-title">INFORMATIONS</h5>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-map-marker-alt"></i></div>
+            <div class="contact-info-text">
+              <div class="label">LOCALISATION</div>
+              <div class="val">Delmas, Haïti</div>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fas fa-envelope"></i></div>
+            <div class="contact-info-text">
+              <div class="label">EMAIL</div>
+              <div class="val">arbensvital@gmail.com</div>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon" style="border-color:var(--neon-green)"><i class="fab fa-whatsapp" style="color:var(--neon-green)"></i></div>
+            <div class="contact-info-text">
+              <div class="label">WHATSAPP</div>
+              <div class="val">+509 38 97 0263</div>
+            </div>
+          </div>
+          <div class="contact-info-item">
+            <div class="contact-info-icon"><i class="fab fa-linkedin-in"></i></div>
+            <div class="contact-info-text">
+              <div class="label">LINKEDIN</div>
+              <div class="val">linkedin.com/in/arbensvital</div>
+            </div>
+          </div>
+          <div class="mt-3 p-3" style="border:1px solid var(--gray2);background:var(--dark-card2);">
+            <p style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon-green);letter-spacing:1px;margin:0;">
+              <span class="status-dot"></span> DISPONIBLE POUR MISSIONS FREELANCE
+            </p>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-7">
+        <div class="contact-card">
+          <h5 class="footer-title">ENVOYER UN MESSAGE</h5>
+          <div class="contact-form">
+            <div class="row g-3">
+              <div class="col-md-6">
+                <label>NOM COMPLET</label>
+                <input type="text" id="c-name" placeholder="John Doe">
+              </div>
+              <div class="col-md-6">
+                <label>EMAIL</label>
+                <input type="email" id="c-email" placeholder="john@example.com">
+              </div>
+              <div class="col-12">
+                <label>SUJET</label>
+                <input type="text" id="c-subject" placeholder="Proposition de mission...">
+              </div>
+              <div class="col-12">
+                <label>MESSAGE</label>
+                <textarea id="c-message" rows="5" placeholder="Décrivez votre projet..."></textarea>
+              </div>
+              <div class="col-12">
+                <div class="d-flex gap-3">
+                  <button class="btn-cyber btn-cyber-primary flex-fill" onclick="sendContactEmail()">
+                    <i class="fas fa-paper-plane me-2"></i>ENVOYER PAR EMAIL
+                  </button>
+                  <button class="btn-cyber btn-cyber-secondary flex-fill" onclick="sendContactWA()">
+                    <i class="fab fa-whatsapp me-2"></i>VIA WHATSAPP
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-lg-4">
+        <div class="footer-brand">BUG5<span>R2AP2R</span></div>
+        <p class="footer-desc">Professionnel IT spécialisé en cybersécurité, réseau et data. Basé en Haïti, disponible pour missions locales et internationales.</p>
+        <div class="footer-social">
+          <a href="https://linkedin.com/" target="_blank"><i class="fab fa-linkedin-in"></i></a>
+          <a href="https://github.com/" target="_blank"><i class="fab fa-github"></i></a>
+          <a href="https://wa.me/50938970263" target="_blank"><i class="fab fa-whatsapp"></i></a>
+          <a href="mailto:arbensvital@gmail.com"><i class="fas fa-envelope"></i></a>
+          <a href="https://twitter.com/" target="_blank"><i class="fab fa-x-twitter"></i></a>
+        </div>
+      </div>
+      <div class="col-lg-2 col-6">
+        <div class="footer-title">NAVIGATION</div>
+        <ul class="footer-links">
+          <li><a href="#hero">Accueil</a></li>
+          <li><a href="#about">À Propos</a></li>
+          <li><a href="#services">Services</a></li>
+          <li><a href="#projects">Projets</a></li>
+          <li><a href="#contact">Contact</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3 col-6">
+        <div class="footer-title">SERVICES</div>
+        <ul class="footer-links">
+          <li><a href="#">Cybersécurité</a></li>
+          <li><a href="#">Admin Réseau</a></li>
+          <li><a href="#">Data Analytics</a></li>
+          <li><a href="#">Développement</a></li>
+          <li><a href="#">Base de Données</a></li>
+        </ul>
+      </div>
+      <div class="col-lg-3">
+        <div class="footer-title">STATUT SYSTÈME</div>
+        <div style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;">
+          <div style="margin-bottom:0.6rem;"><span class="status-dot"></span><span style="color:var(--text-mid)">DISPONIBLE</span></div>
+          <div style="margin-bottom:0.6rem;color:var(--text-dim)">UPTIME: <span style="color:var(--neon-green)">99.9%</span></div>
+          <div style="margin-bottom:0.6rem;color:var(--text-dim)">LOCATION: <span style="color:var(--neon-blue)">HTI/PAP</span></div>
+          <div style="color:var(--text-dim)">TIMEZONE: <span style="color:var(--neon-blue)">UTC-5</span></div>
+        </div>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      © 2026 <span>Arbens VITAL</span> — Tous droits réservés. Conçu avec <span>❤</span> et <span>code</span>.
+    </div>
+  </div>
+</footer>
+
+<!-- ===== SERVICE MODAL ===== -->
+<div class="modal fade" id="serviceModal" tabindex="-1">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">DEMANDE DE SERVICE — <span id="modal-service-title"></span></h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <p style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--text-dim);margin-bottom:1.5rem;">
+          // Remplissez le formulaire ci-dessous et choisissez votre moyen de contact préféré.
+        </p>
+        <div class="mb-3">
+          <label class="form-label" style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon-blue);letter-spacing:2px;">NOM COMPLET *</label>
+          <input type="text" class="form-control" id="modal-name" placeholder="Votre nom complet">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon-blue);letter-spacing:2px;">EMAIL *</label>
+          <input type="email" class="form-control" id="modal-email" placeholder="votre@email.com">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon-blue);letter-spacing:2px;">TÉLÉPHONE / WHATSAPP</label>
+          <input type="tel" class="form-control" id="modal-phone" placeholder="+509 XX XX XXXX">
+        </div>
+        <div class="mb-3">
+          <label class="form-label" style="font-family:'Share Tech Mono',monospace;font-size:0.75rem;color:var(--neon-blue);letter-spacing:2px;">DESCRIPTION DU PROJET *</label>
+          <textarea class="form-control" id="modal-desc" rows="4" placeholder="Décrivez votre besoin..."></textarea>
+        </div>
+        <div class="send-choice">
+          <button class="send-btn send-email" onclick="submitServiceEmail()"><i class="fas fa-envelope me-2"></i>Envoyer par Email</button>
+          <button class="send-btn send-wa" onclick="submitServiceWA()"><i class="fab fa-whatsapp me-2"></i>Envoyer sur WhatsApp</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ===== BACKGROUND CANVAS: SPIDERS + CIRCUITS =====
+const canvas = document.getElementById('bg-canvas');
+const ctx = canvas.getContext('2d');
+canvas.width = window.innerWidth;
+canvas.height = window.innerHeight;
+
+window.addEventListener('resize', () => {
+  canvas.width = window.innerWidth;
+  canvas.height = window.innerHeight;
+  initNodes();
+});
+
+let nodes = [], mouse = {x: -999, y: -999};
+const NODE_COUNT = 80;
+const COLOR_A = '#00d4ff';
+const COLOR_B = '#00ff41';
+
+function initNodes() {
+  nodes = [];
+  for (let i = 0; i < NODE_COUNT; i++) {
+    nodes.push({
+      x: Math.random() * canvas.width,
+      y: Math.random() * canvas.height,
+      vx: (Math.random() - 0.5) * 0.4,
+      vy: (Math.random() - 0.5) * 0.4,
+      r: Math.random() * 2 + 1,
+      color: Math.random() > 0.5 ? COLOR_A : COLOR_B,
+      type: Math.random() > 0.3 ? 'node' : 'spider'
+    });
+  }
+}
+
+// Spider legs
+function drawSpider(x, y, size, color) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 0.6;
+  ctx.globalAlpha = 0.5;
+  const legs = 8;
+  for (let i = 0; i < legs; i++) {
+    const angle = (i / legs) * Math.PI * 2;
+    const len = size * (3 + Math.sin(Date.now() * 0.002 + i) * 1);
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    const mid1x = x + Math.cos(angle - 0.3) * len * 0.5;
+    const mid1y = y + Math.sin(angle - 0.3) * len * 0.5;
+    const endx = x + Math.cos(angle) * len;
+    const endy = y + Math.sin(angle) * len;
+    ctx.quadraticCurveTo(mid1x, mid1y, endx, endy);
+    ctx.stroke();
+  }
+  ctx.beginPath();
+  ctx.arc(x, y, size * 0.8, 0, Math.PI * 2);
+  ctx.fillStyle = color;
+  ctx.globalAlpha = 0.8;
+  ctx.fill();
+  ctx.restore();
+}
+
+// Circuit node
+function drawCircuitNode(x, y, size, color) {
+  ctx.save();
+  ctx.strokeStyle = color;
+  ctx.lineWidth = 0.8;
+  ctx.globalAlpha = 0.6;
+  ctx.beginPath();
+  ctx.rect(x - size, y - size, size * 2, size * 2);
+  ctx.stroke();
+  // circuit lines
+  const dirs = [[1,0],[-1,0],[0,1],[0,-1]];
+  dirs.forEach(([dx,dy]) => {
+    if (Math.random() > 0.5) {
+      ctx.beginPath();
+      ctx.moveTo(x + dx * size, y + dy * size);
+      ctx.lineTo(x + dx * (size + 8 + Math.random() * 12), y + dy * (size + 8 + Math.random() * 12));
+      ctx.stroke();
+    }
+  });
+  ctx.restore();
+}
+
+function drawConnections() {
+  for (let i = 0; i < nodes.length; i++) {
+    for (let j = i + 1; j < nodes.length; j++) {
+      const dx = nodes[i].x - nodes[j].x;
+      const dy = nodes[i].y - nodes[j].y;
+      const dist = Math.sqrt(dx*dx + dy*dy);
+      if (dist < 120) {
+        ctx.save();
+        ctx.globalAlpha = (1 - dist/120) * 0.3;
+        ctx.strokeStyle = nodes[i].color;
+        ctx.lineWidth = 0.5;
+        ctx.beginPath();
+        ctx.moveTo(nodes[i].x, nodes[i].y);
+        ctx.lineTo(nodes[j].x, nodes[j].y);
+        ctx.stroke();
+        ctx.restore();
+      }
+    }
+    // mouse interaction
+    const mdx = nodes[i].x - mouse.x;
+    const mdy = nodes[i].y - mouse.y;
+    const mdist = Math.sqrt(mdx*mdx + mdy*mdy);
+    if (mdist < 150) {
+      ctx.save();
+      ctx.globalAlpha = (1 - mdist/150) * 0.4;
+      ctx.strokeStyle = COLOR_A;
+      ctx.lineWidth = 0.7;
+      ctx.beginPath();
+      ctx.moveTo(nodes[i].x, nodes[i].y);
+      ctx.lineTo(mouse.x, mouse.y);
+      ctx.stroke();
+      ctx.restore();
+    }
+  }
+}
+
+window.addEventListener('mousemove', e => { mouse.x = e.clientX; mouse.y = e.clientY; });
+
+function animate() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  drawConnections();
+  nodes.forEach(n => {
+    n.x += n.vx; n.y += n.vy;
+    if (n.x < 0 || n.x > canvas.width) n.vx *= -1;
+    if (n.y < 0 || n.y > canvas.height) n.vy *= -1;
+    if (n.type === 'spider') drawSpider(n.x, n.y, n.r * 3, n.color);
+    else drawCircuitNode(n.x, n.y, n.r * 2, n.color);
+  });
+  requestAnimationFrame(animate);
+}
+initNodes();
+animate();
+
+// ===== TYPED TEXT EFFECT =====
+const roles = ['Admin Réseau', 'Data Analyst', 'Developer', 'DBA', 'IMO', 'Analyste Cybersécurité'];
+let roleIndex = 0, charIndex = 0, typing = true;
+const typedEl = document.getElementById('typed-text');
+
+function typeRole() {
+  const current = roles[roleIndex];
+  if (typing) {
+    if (charIndex < current.length) {
+      typedEl.textContent += current[charIndex++];
+      setTimeout(typeRole, 80);
+    } else {
+      typing = false;
+      setTimeout(typeRole, 2000);
+    }
+  } else {
+    if (charIndex > 0) {
+      typedEl.textContent = current.substring(0, --charIndex);
+      setTimeout(typeRole, 40);
+    } else {
+      typing = true;
+      roleIndex = (roleIndex + 1) % roles.length;
+      setTimeout(typeRole, 300);
+    }
+  }
+}
+typeRole();
+
+// ===== NAVBAR SCROLL =====
+window.addEventListener('scroll', () => {
+  document.getElementById('navbar').classList.toggle('scrolled', window.scrollY > 50);
+});
+
+// ===== ABOUT TABS =====
+function showTab(id) {
+  document.querySelectorAll('.tab-content-panel').forEach(p => p.classList.remove('active'));
+  document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  event.target.classList.add('active');
+  // Animate skill bars if skills tab
+  if (id === 'skills') {
+    setTimeout(() => {
+      document.querySelectorAll('.skill-bar-fill').forEach(bar => {
+        bar.style.width = bar.dataset.width + '%';
+      });
+    }, 100);
+  }
+}
+
+// ===== SERVICE MODAL =====
+let currentService = '';
+const serviceModal = new bootstrap.Modal(document.getElementById('serviceModal'));
+
+function openServiceModal(service) {
+  currentService = service;
+  document.getElementById('modal-service-title').textContent = service.toUpperCase();
+  document.getElementById('modal-name').value = '';
+  document.getElementById('modal-email').value = '';
+  document.getElementById('modal-phone').value = '';
+  document.getElementById('modal-desc').value = '';
+  serviceModal.show();
+}
+
+function getModalData() {
+  return {
+    name: document.getElementById('modal-name').value.trim(),
+    email: document.getElementById('modal-email').value.trim(),
+    phone: document.getElementById('modal-phone').value.trim(),
+    desc: document.getElementById('modal-desc').value.trim()
+  };
+}
+
+function submitServiceEmail() {
+  const d = getModalData();
+  if (!d.name || !d.email || !d.desc) { alert('Veuillez remplir les champs obligatoires (*)'); return; }
+  const subject = encodeURIComponent(`Demande de Service: ${currentService}`);
+  const body = encodeURIComponent(
+    `SERVICE DEMANDÉ: ${currentService}\n\nNOM: ${d.name}\nEMAIL: ${d.email}\nTÉL: ${d.phone}\n\nDESCRIPTION:\n${d.desc}`
+  );
+  // Remplacez par votre email
+  window.location.href = `mailto:arbensvital@gmail.com?subject=${subject}&body=${body}`;
+  serviceModal.hide();
+}
+
+function submitServiceWA() {
+  const d = getModalData();
+  if (!d.name || !d.desc) { alert('Veuillez remplir les champs obligatoires (*)'); return; }
+  const msg = encodeURIComponent(
+    `*DEMANDE DE SERVICE: ${currentService}*\n\nNom: ${d.name}\nEmail: ${d.email}\nTél: ${d.phone}\n\nDescription:\n${d.desc}`
+  );
+  // Remplacez par votre numéro WhatsApp
+  window.open(`https://wa.me/50938970263?text=${msg}`, '_blank');
+  serviceModal.hide();
+}
+
+// ===== CONTACT FORM =====
+function sendContactEmail() {
+  const name = document.getElementById('c-name').value.trim();
+  const email = document.getElementById('c-email').value.trim();
+  const subject = document.getElementById('c-subject').value.trim();
+  const message = document.getElementById('c-message').value.trim();
+  if (!name || !message) { alert('Veuillez remplir au moins le nom et le message.'); return; }
+  const sub = encodeURIComponent(subject || 'Contact depuis Portfolio');
+  const body = encodeURIComponent(`Nom: ${name}\nEmail: ${email}\n\nMessage:\n${message}`);
+  window.location.href = `mailto:arbensvital@gmail.com?subject=${sub}&body=${body}`;
+}
+
+function sendContactWA() {
+  const name = document.getElementById('c-name').value.trim();
+  const subject = document.getElementById('c-subject').value.trim();
+  const message = document.getElementById('c-message').value.trim();
+  if (!message) { alert('Veuillez écrire un message.'); return; }
+  const msg = encodeURIComponent(`*${subject || 'Message Portfolio'}*\nDe: ${name}\n\n${message}`);
+  window.open(`https://wa.me/50938970263?text=${msg}`, '_blank');
+}
+
+// ===== SCROLL ANIMATIONS =====
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(e => {
+    if (e.isIntersecting) {
+      e.target.style.opacity = '1';
+      e.target.style.transform = 'translateY(0)';
+    }
+  });
+}, { threshold: 0.1 });
+
+document.querySelectorAll('.service-card, .project-card, .contact-card').forEach(el => {
+  el.style.opacity = '0';
+  el.style.transform = 'translateY(20px)';
+  el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+  observer.observe(el);
+});
+
+// Cursor blink in hero
+setInterval(() => {
+  const c = document.getElementById('cursor');
+  if (c) c.style.opacity = c.style.opacity === '0' ? '1' : '0';
+}, 500);
+</script>
 </body>
 </html>
